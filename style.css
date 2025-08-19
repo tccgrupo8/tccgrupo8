@@ -1,0 +1,9 @@
+/* Custom styles: keeps the earlier sidebar look combined with Bootstrap */
+body { background-color: #f4f4f4; }
+.sidebar { width: 220px; min-height: 100vh; position: fixed; left: 0; top: 56px; }
+.content { margin-left: 220px; width: calc(100% - 220px); min-height: calc(100vh - 56px); }
+@media (max-width: 767px) {
+  .sidebar { display: none; }
+  .content { margin-left: 0; width: 100%; }
+}
+.card { border-radius: 8px; }
