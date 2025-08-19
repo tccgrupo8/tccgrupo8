@@ -3,7 +3,7 @@ session_start();
 include 'conexao.php';
 $erro = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $usuario = $_POST['email'] ?? '';
+    $email = $_POST['email'] ?? '';
     $senha = $_POST['senha'] ?? '';
     $sql = "SELECT * FROM funcionarios WHERE email = ?";
     $stmt = $conn->prepare($sql);
@@ -53,7 +53,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <label class="form-label text-white">Senha</label>
                         <input type="password" name="senha" class="form-control" required>
                     </div>
-                    <button class="btn btn-white bg-white w-100 text-black">Entrar</button>
+                    <button class="btn w-100 text-black" style="background-color: #1ED760; border: none;">
+                            Entrar
+                    </button>
                 </form>
                 <a href="cadastro_funcionario.php" class="d-block mt-3">Cadastrar novo funcionário</a>
             </div>
