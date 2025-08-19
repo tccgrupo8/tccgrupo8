@@ -3,17 +3,17 @@ include 'conexao.php';
 $msg = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nome = $_POST['nome'];
-    $usuario = $_POST['usuario'];
+    $usuario = $_POST['email'];
     $senha = password_hash($_POST['senha'], PASSWORD_DEFAULT);
 
-    $sql = "INSERT INTO funcionarios (nome, usuario, senha) VALUES (?, ?, ?)";
+    $sql = "INSERT INTO funcionarios (nome, email, senha) VALUES (?, ?, ?)";
     $stmt = $conn->prepare($sql);
 
     if ($stmt === false) {
         die("Erro na preparação da query: " . $conn->error);
     }
 
-    $stmt->bind_param("sss", $nome, $usuario, $senha);
+    $stmt->bind_param("sss", $nome, $email, $senha);
 
     if ($stmt->execute()) {
         $msg = "Funcionário cadastrado com sucesso!";
