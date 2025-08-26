@@ -31,7 +31,7 @@ INSERT INTO atendimento (mesa, mensagem) VALUES
 CREATE TABLE IF NOT EXISTS funcionarios (
   id INT AUTO_INCREMENT PRIMARY KEY,
   nome VARCHAR(100) NOT NULL,
-  usuario VARCHAR(50) NOT NULL UNIQUE,
+  email VARCHAR(50) NOT NULL UNIQUE,
   senha VARCHAR(255) NOT NULL
 );
 -- OBS: cadastre um usuário via cadastro_funcionario.php para criar o primeiro administrador.

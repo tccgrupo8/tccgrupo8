@@ -3,7 +3,7 @@ include 'conexao.php';
 $msg = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nome = $_POST['nome'];
-    $usuario = $_POST['email'];
+    $email = $_POST['email'];
     $senha = password_hash($_POST['senha'], PASSWORD_DEFAULT);
 
     $sql = "INSERT INTO funcionarios (nome, email, senha) VALUES (?, ?, ?)";
