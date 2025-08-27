@@ -52,9 +52,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <label class="form-label">Senha</label>
                         <input type="password" name="senha" class="form-control" required>
                     </div>
-                    <button class="btn btn-success bg-light text-black w-100">Cadastrar</button>
+                    <button class="btn w-100 text-black" style="background-color: #1ED760; border: none;">
+                            Cadastrar
+                    </button>
                 </form>
-                <a href="login.php" class="d-block mt-3">Voltar ao login</a>
+                <a href="index.php" class="d-block mt-3">Ja possui uma conta? Logar-se</a>
             </div>
         </div>
     </div>

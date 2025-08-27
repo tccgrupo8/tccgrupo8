@@ -2,7 +2,7 @@
 <?php
 session_start();
 if (!isset($_SESSION['funcionario_id'])) {
-    header('Location: login.php');
+    header('Location: index.php');
     exit;
 }
 ?>
@@ -57,7 +57,7 @@ if (!isset($_SESSION['funcionario_id'])) {
         <li class="nav-item"><a class="nav-link" href="pedidos.php">📦 Pedidos</a></li>
         <li class="nav-item"><a class="nav-link" href="estoque.php">📊 Estoque</a></li>
         <li class="nav-item"><a class="nav-link" href="atendimento.php">🎧 Atendimento</a></li>
-        <li class="nav-item"><a class="nav-link text-white" href="login.php">🚪 Sair</a></li>
+        <li class="nav-item"><a class="nav-link text-white" href="index.php">🚪 Sair</a></li>
       </ul>
     </div>
   </div>

@@ -1,9 +1,9 @@
 <?php
 // Ajuste usuário/senha se necessário
 $host = "localhost";
-$usuario = "root";
-$senha = "";
-$banco = "vira_copos";
+$usuario = "u557720587_2025_php02";
+$senha = "Mtec@php2";
+$banco = "u557720587_2025_php02";
 
 $conn = new mysqli($host, $usuario, $senha, $banco);
 
