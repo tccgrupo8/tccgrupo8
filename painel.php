@@ -40,7 +40,7 @@ if (!isset($_SESSION['funcionario_id'])) {
         <li class="nav-item"><a class="nav-link text-white" href="pedidos.php">📦 Pedidos</a></li>
         <li class="nav-item"><a class="nav-link text-white" href="estoque.php">📊 Estoque</a></li>
         <li class="nav-item"><a class="nav-link text-white" href="atendimento.php">🎧 Atendimento</a></li>
-        <li class="nav-item"><a class="nav-link text-white" href="login.php">🚪 Sair</a></li>
+        <li class="nav-item"><a class="nav-link text-white" href="index.php">🚪 Sair</a></li>
       </ul>
     </div>
   </aside>
