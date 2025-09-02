@@ -8,19 +8,41 @@ if (!isset($_SESSION['funcionario_id'])) {
 
 <?php
 include 'conexao.php';
+
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
-    if (!isset($_GET['id'])) { header('Location: estoque.php'); exit; }
+    if (!isset($_GET['id'])) { 
+        header('Location: estoque.php'); 
+        exit; 
+    }
     $id = intval($_GET['id']);
-    $res = $conn->query("SELECT id, produto, quantidade FROM estoque WHERE id = $id") or die($conn->error);
-    if ($res->num_rows === 0) { header('Location: estoque.php'); exit; }
+    $res = $conn->query("SELECT id, produto, quantidade, validade FROM estoque WHERE id = $id") or die($conn->error);
+    if ($res->num_rows === 0) { 
+        header('Location: estoque.php'); 
+        exit; 
+    }
     $r = $res->fetch_assoc();
 }
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $id = intval($_POST['id']);
     $quant = $conn->real_escape_string($_POST['quantidade']);
-    $conn->query("UPDATE estoque SET quantidade = '$quant' WHERE id = $id") or die($conn->error);
-    header('Location: estoque.php');
-    exit;
+    $validade = $conn->real_escape_string($_POST['validade']);
+    $responsavel_id = $_SESSION['funcionario_id'];
+
+    // Atualiza quantidade, validade, data_entrada e responsável
+    $sql = "UPDATE estoque 
+            SET quantidade = '$quant', 
+                validade = '$validade', 
+                data_entrada = CURRENT_DATE, 
+                responsavel_id = '$responsavel_id'
+            WHERE id = $id";
+    
+    if ($conn->query($sql)) {
+        header('Location: estoque.php');
+        exit;
+    } else {
+        die("Erro ao atualizar: " . $conn->error);
+    }
 }
 ?>
 <!doctype html>
@@ -43,7 +65,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
     <div class="mb-3">
       <label class="form-label">Quantidade</label>
-      <input name="quantidade" class="form-control" value="<?php echo htmlspecialchars($r['quantidade']); ?>">
+      <input name="quantidade" class="form-control" value="<?php echo htmlspecialchars($r['quantidade']); ?>" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Validade</label>
+      <input type="date" name="validade" class="form-control" value="<?php echo htmlspecialchars($r['validade']); ?>" required>
+    </div>
+    <div class="mb-3">
+      <label class="form-label">Validade</label>
+      <input type="date" name="validade" class="form-control" value="<?php echo htmlspecialchars($r['validade']); ?>" required>
     </div>
     <button class="btn btn-primary">Salvar</button>
     <a class="btn btn-secondary" href="estoque.php">Cancelar</a>
