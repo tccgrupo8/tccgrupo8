@@ -7,7 +7,6 @@ if (!isset($_SESSION['funcionario_id'])) {
 }
 ?>
 
-
 <!doctype html>
 <html lang="pt-br">
 <head>
@@ -16,6 +15,7 @@ if (!isset($_SESSION['funcionario_id'])) {
   <title>Pedidos - Vira Copos</title>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 </head>
 <body>
 <nav class="navbar navbar-dark bg-black sticky-top">
@@ -39,7 +39,14 @@ if (!isset($_SESSION['funcionario_id'])) {
 
   <main class="content p-4">
     <div class="container-fluid">
-      <h1>📦 Pedidos</h1>
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="m-0">📦 Pedidos</h1>
+        <!-- 🔹 Botão de Adicionar Pedido -->
+        <a href="adicionar_pedido.php" class="btn btn-success">
+          <i class="bi bi-plus-circle"></i> Adicionar Pedido
+        </a>
+      </div>
+
       <div class="table-responsive">
         <table class="table table-striped table-bordered mt-3">
           <thead class="table-light">
@@ -63,7 +70,7 @@ if (!isset($_SESSION['funcionario_id'])) {
                   echo '</tr>';
                 }
               } else {
-                echo '<tr><td colspan="5">Nenhum pedido encontrado.</td></tr>';
+                echo '<tr><td colspan="5" class="text-center">Nenhum pedido encontrado.</td></tr>';
               }
             ?>
           </tbody>
