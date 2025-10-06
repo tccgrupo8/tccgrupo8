@@ -40,9 +40,12 @@ if (!isset($_SESSION['funcionario_id'])) {
     <div class="container-fluid">
       <h1>📊 Estoque</h1>
       <div class="table-responsive">
-        <table class="table table-striped table-bordered mt-3">
-          <thead class="table-light">
-            <tr>
+      <a href="adicionar_estoque.php" class="btn btn-success btn-lg">
+        <i class="bi bi-plus-circle"></i> Adicionar Item
+      </a>
+      <table class="table table-striped table-bordered mt-3">
+        <thead class="table-light">
+          <tr>
               <th>Produto</th>
               <th>Quantidade</th>
               <th>Data de Entrada</th>

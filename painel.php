@@ -7,7 +7,6 @@ if (!isset($_SESSION['funcionario_id'])) {
 }
 ?>
 
-
 <!doctype html>
 <html lang="pt-br">
 <head>
@@ -26,6 +25,13 @@ if (!isset($_SESSION['funcionario_id'])) {
       ☰
     </button>
     <a class="navbar-brand ms-2" href="#">Vira Copos - Funcionário</a>
+
+    <!-- Perfil e logout no canto direito -->
+    <div class="d-flex align-items-center ms-auto">
+      <span class="text-white me-3"><?= htmlspecialchars($_SESSION['funcionario_nome']) ?></span>
+      <a href="perfil.php" class="btn btn-outline-light me-2">Meu Perfil</a>
+      <a href="logout.php" class="btn btn-light">Sair</a>
+    </div>
   </div>
 </nav>
 
