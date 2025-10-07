@@ -7,3 +7,70 @@ body { background-color: #f4f4f4; }
   .content { margin-left: 0; width: 100%; }
 }
 .card { border-radius: 8px; }
+body {
+  background-color: #f8f9fa;
+}
+
+/* Título das categorias */
+.categoria-titulo {
+  margin-top: 40px;
+  font-size: 22px;
+  font-weight: bold;
+  color: #333;
+  border-bottom: 3px solid #198754;
+  display: inline-block;
+  padding-bottom: 5px;
+}
+
+/* Cards dos produtos */
+.produto-card {
+  transition: transform 0.2s, box-shadow 0.2s;
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: #fff;
+}
+
+.produto-card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 0 15px rgba(0,0,0,0.15);
+}
+
+/* Imagem do produto */
+.produto-card img {
+  height: 180px;
+  object-fit: cover;
+  border-radius: 12px 12px 0 0;
+}
+
+/* Informações do produto */
+.produto-info {
+  padding: 15px;
+  background-color: #fff;
+  border-radius: 0 0 12px 12px;
+  text-align: center;
+}
+
+.produto-nome {
+  font-weight: bold;
+  font-size: 18px;
+}
+
+.produto-preco {
+  color: #198754;
+  font-size: 16px;
+  font-weight: 600;
+  margin-top: 5px;
+}
+
+/* Botão de adicionar produto */
+.btn-escolher {
+  background-color: #ffc107;
+  border: none;
+  font-weight: bold;
+  color: #000;
+}
+
+.btn-escolher:hover {
+  background-color: #e0a800;
+  color: #fff;
+}

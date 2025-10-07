@@ -8,11 +8,10 @@ if (!isset($_SESSION['funcionario_id'])) {
     exit;
 }
 
-// Puxa produtos do banco organizados por categoria
+// Busca os produtos no banco, ordenados por categoria
 $sql = "SELECT * FROM produtos ORDER BY categoria, nome";
 $result = $conn->query($sql);
 
-// Organiza os produtos em um array por categoria
 $categorias = [];
 while ($row = $result->fetch_assoc()) {
     $categorias[$row['categoria']][] = $row;
@@ -24,88 +23,45 @@ while ($row = $result->fetch_assoc()) {
     <meta charset="UTF-8">
     <title>Adicionar Pedido</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        .categoria-titulo {
-            background-color: #f8f9fa;
-            padding: 10px;
-            border-radius: 8px;
-            margin-top: 20px;
-            font-weight: bold;
-            font-size: 18px;
-        }
-        .produto-card {
-            border: 1px solid #ddd;
-            border-radius: 12px;
-            padding: 10px;
-            margin: 8px;
-            text-align: center;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-        .produto-card:hover {
-            background-color: #f1f1f1;
-        }
-        .produto-card input[type="checkbox"] {
-            display: none;
-        }
-        .produto-card.checked {
-            background-color: #d1e7dd;
-            border-color: #0f5132;
-        }
-        .checkmark {
-            display: inline-block;
-            width: 22px;
-            height: 22px;
-            border-radius: 5px;
-            border: 2px solid #0d6efd;
-            margin-right: 5px;
-            position: relative;
-        }
-        .checked .checkmark::after {
-            content: "✔";
-            color: white;
-            background-color: #0d6efd;
-            position: absolute;
-            top: -3px;
-            left: 3px;
-            font-size: 16px;
-            border-radius: 5px;
-            width: 20px;
-            height: 20px;
-            text-align: center;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-light">
+<body>
 <div class="container mt-4">
-    <h2 class="mb-4 text-center">Adicionar Pedido</h2>
+    <h2 class="text-center mb-5">🍽️ Adicionar Pedido</h2>
+
     <form method="POST" action="nota_pedido.php">
         <?php foreach ($categorias as $categoria => $produtos): ?>
             <div class="categoria-titulo"><?= htmlspecialchars($categoria) ?></div>
-            <div class="row">
+            <div class="row mt-3">
                 <?php foreach ($produtos as $produto): ?>
-                    <div class="col-md-3">
-                        <label class="produto-card" onclick="toggleCheck(this)">
-                            <input type="checkbox" name="produtos[]" value="<?= $produto['id'] ?>">
-                            <span class="checkmark"></span>
-                            <strong><?= htmlspecialchars($produto['nome']) ?></strong><br>
-                            <small>R$ <?= number_format($produto['preco'], 2, ',', '.') ?></small>
-                        </label>
+                    <div class="col-md-3 mb-4">
+                        <div class="card produto-card">
+                            <img src="<?= htmlspecialchars($produto['imagem'] ?: 'imagens/sem_imagem.jpg') ?>" class="card-img-top" alt="<?= htmlspecialchars($produto['nome']) ?>">
+                            <div class="produto-info text-center">
+                                <div class="produto-nome"><?= htmlspecialchars($produto['nome']) ?></div>
+                                <div class="produto-preco">R$ <?= number_format($produto['preco'], 2, ',', '.') ?></div>
+                                <input type="checkbox" name="produtos[]" value="<?= $produto['id'] ?>" class="form-check-input mt-2">
+                                <button type="button" class="btn btn-escolher mt-3 w-100" onclick="toggleProduto(this)">Adicionar</button>
+                            </div>
+                        </div>
                     </div>
                 <?php endforeach; ?>
             </div>
         <?php endforeach; ?>
-        <div class="text-center mt-4">
-            <button type="submit" class="btn btn-success btn-lg">Finalizar Pedido</button>
+
+        <div class="text-center mt-5">
+            <button type="submit" class="btn btn-success btn-lg">✅ Finalizar Pedido</button>
         </div>
     </form>
 </div>
 
 <script>
-function toggleCheck(element) {
-    const checkbox = element.querySelector('input[type="checkbox"]');
+function toggleProduto(button) {
+    const checkbox = button.parentElement.querySelector('input[type="checkbox"]');
     checkbox.checked = !checkbox.checked;
-    element.classList.toggle('checked', checkbox.checked);
+    button.classList.toggle('btn-success', checkbox.checked);
+    button.classList.toggle('btn-escolher', !checkbox.checked);
+    button.textContent = checkbox.checked ? "Adicionado ✅" : "Adicionar";
 }
 </script>
 </body>

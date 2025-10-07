@@ -39,13 +39,20 @@ if (!isset($_SESSION['funcionario_id'])) {
 
   <main class="content p-4">
     <div class="container-fluid">
-      <div class="d-flex justify-content-between align-items-center mb-3">
-        <h1 class="m-0">📦 Pedidos</h1>
-        <!-- 🔹 Botão de Adicionar Pedido -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="m-0">📦 Pedidos</h1>
+    <div class="d-flex gap-2">
         <a href="adicionar_pedido.php" class="btn btn-success">
           <i class="bi bi-plus-circle"></i> Adicionar Pedido
         </a>
-      </div>
+
+        
+        <a href="adicionar_produto.php" class="btn btn-primary">
+          <i class="bi bi-plus-square"></i> Adicionar Produto
+        </a>
+    </div>
+    </div>
+
 
       <div class="table-responsive">
         <table class="table table-striped table-bordered mt-3">

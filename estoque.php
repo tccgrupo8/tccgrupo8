@@ -43,6 +43,9 @@ if (!isset($_SESSION['funcionario_id'])) {
       <a href="adicionar_estoque.php" class="btn btn-success btn-lg">
         <i class="bi bi-plus-circle"></i> Adicionar Item
       </a>
+      <?php if (isset($_GET['msg']) && $_GET['msg'] == 'excluido'): ?>
+      <div class="alert alert-success">Item excluído com sucesso!</div>
+      <?php endif; ?>
       <table class="table table-striped table-bordered mt-3">
         <thead class="table-light">
           <tr>
@@ -69,7 +72,13 @@ if (!isset($_SESSION['funcionario_id'])) {
                   echo '<td>'.date("d/m/Y", strtotime($r['data_entrada'])).'</td>';
                   echo '<td>'.date("d/m/Y", strtotime($r['validade'])).'</td>';
                   echo '<td>'.($r['responsavel'] ?? "Não informado").'</td>';
-                  echo '<td><a class="btn btn-sm btn-warning" href="editar_estoque.php?id='.$r['id'].'">Editar</a></td>';
+                  echo '<td>
+                         <a class="btn btn-sm btn-warning me-2" href="editar_estoque.php?id='.$r['id'].'">Editar</a>
+                          <a class="btn btn-sm btn-danger" href="excluir_estoque.php?id='.$r['id'].'" 
+                          onclick="return confirm(\'Tem certeza que deseja excluir este item?\')">
+                          Excluir
+                         </a>
+                       </td>';
                   echo '</tr>';
                 }
               } else {
