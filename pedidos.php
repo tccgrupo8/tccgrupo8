@@ -39,35 +39,50 @@ if (!isset($_SESSION['funcionario_id'])) {
 
   <main class="content p-4">
     <div class="container-fluid">
-    <div class="d-flex justify-content-between align-items-center mb-3">
-    <h1 class="m-0">📦 Pedidos</h1>
-    <div class="d-flex gap-2">
-        <a href="adicionar_pedido.php" class="btn btn-success">
-          <i class="bi bi-plus-circle"></i> Adicionar Pedido
-        </a>
-
-        
-        <a href="adicionar_produto.php" class="btn btn-primary">
-          <i class="bi bi-plus-square"></i> Adicionar Produto
-        </a>
-    </div>
-    </div>
-
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1 class="m-0">📦 Pedidos</h1>
+        <div class="d-flex gap-2">
+          <a href="adicionar_pedido.php" class="btn btn-success">
+            <i class="bi bi-plus-circle"></i> Adicionar Pedido
+          </a>
+          <a href="adicionar_produto.php" class="btn btn-primary">
+            <i class="bi bi-plus-square"></i> Adicionar Produto
+          </a>
+        </div>
+      </div>
 
       <div class="table-responsive">
         <table class="table table-striped table-bordered mt-3">
           <thead class="table-light">
-            <tr><th>ID</th><th>Cliente</th><th>Itens</th><th>Status</th><th>Ações</th></tr>
+            <tr>
+              <th>ID</th>
+              <th>Cliente</th>
+              <th>Mesa</th>
+              <th>Itens</th>
+              <th>Status</th>
+              <th>Ações</th>
+            </tr>
           </thead>
           <tbody>
             <?php
-              $sql = "SELECT id, cliente, itens, status FROM pedidos ORDER BY id DESC";
+              $sql = "
+              SELECT p.id, p.cliente, p.mesa, p.status,
+              GROUP_CONCAT(CONCAT(i.quantidade, 'x ', pr.nome) SEPARATOR ', ') AS itens
+              FROM pedidos p
+              LEFT JOIN itens_pedido i ON p.id = i.pedido_id
+              LEFT JOIN produtos pr ON i.produto_id = pr.id
+              GROUP BY p.id
+              ORDER BY p.id DESC
+              ";
+
               $res = $conn->query($sql) or die($conn->error);
+
               if ($res->num_rows > 0) {
                 while($r = $res->fetch_assoc()) {
                   echo '<tr>';
                   echo '<td>'.$r['id'].'</td>';
                   echo '<td>'.$r['cliente'].'</td>';
+                  echo '<td>'.$r['mesa'].'</td>';
                   echo '<td>'.$r['itens'].'</td>';
                   echo '<td>'.$r['status'].'</td>';
                   echo '<td>
@@ -77,7 +92,7 @@ if (!isset($_SESSION['funcionario_id'])) {
                   echo '</tr>';
                 }
               } else {
-                echo '<tr><td colspan="5" class="text-center">Nenhum pedido encontrado.</td></tr>';
+                echo '<tr><td colspan="6" class="text-center">Nenhum pedido encontrado.</td></tr>';
               }
             ?>
           </tbody>

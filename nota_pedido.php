@@ -14,12 +14,18 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST' || empty($_POST['produtos'])) {
     exit;
 }
 
+// Recebe dados do formulário
 $produtosSelecionados = $_POST['produtos'];
 $cliente = trim($_POST['cliente'] ?? '');
 $mesa = trim($_POST['mesa'] ?? '');
 $funcionario_id = intval($_SESSION['funcionario_id']);
 
-// Busca produtos selecionados
+if (empty($cliente) || empty($mesa)) {
+    echo "<script>alert('Preencha o cliente e a mesa.'); window.history.back();</script>";
+    exit;
+}
+
+// Busca produtos selecionados para calcular total
 $placeholders = implode(',', array_fill(0, count($produtosSelecionados), '?'));
 $sql = "SELECT * FROM produtos WHERE id IN ($placeholders)";
 $stmt = $conn->prepare($sql);
@@ -37,91 +43,58 @@ while ($row = $result->fetch_assoc()) {
     $total += floatval($row['preco']);
 }
 
-// Quando clicar em “Finalizar Pedido”
-if (isset($_POST['finalizar'])) {
-    $status = 'Em andamento';
+// Insere pedido na tabela 'pedidos'
+$status = 'Em andamento';
+$sqlPedido = "INSERT INTO pedidos (cliente, mesa, funcionario_id, status, total) VALUES (?, ?, ?, ?, ?)";
+$stmtPedido = $conn->prepare($sqlPedido);
+if (!$stmtPedido) die("Erro no prepare pedido: " . $conn->error);
 
-    // Insere pedido
-    $sqlPedido = "INSERT INTO pedidos (cliente, numero_mesa, funcionario_id, status, total) VALUES (?, ?, ?, ?, ?)";
-    $stmtPedido->bind_param("ssisd", $cliente, $mesa, $funcionario_id, $status, $total);    
-    if (!$stmtPedido) die("Erro no prepare pedido: " . $conn->error);
+$stmtPedido->bind_param("ssisd", $cliente, $mesa, $funcionario_id, $status, $total);
+$stmtPedido->execute();
+$pedido_id = $conn->insert_id;
 
-    $stmtPedido->bind_param("ssisd", $cliente, $mesa, $funcionario_id, $status, $total);
-    $stmtPedido->execute();
-    $pedido_id = $conn->insert_id;
+// Insere itens do pedido na tabela 'itens_pedido'
+$sqlItem = "INSERT INTO itens_pedido (pedido_id, produto_id, quantidade) VALUES (?, ?, ?)";
+$stmtItem = $conn->prepare($sqlItem);
+if (!$stmtItem) die("Erro no prepare itens: " . $conn->error);
 
-    // Insere itens do pedido
-    $sqlItem = "INSERT INTO itens_pedido (pedido_id, produto_id, quantidade) VALUES (?, ?, ?)";
-    $stmtItem = $conn->prepare($sqlItem);
-    if (!$stmtItem) die("Erro no prepare itens: " . $conn->error);
-
-    foreach ($produtosSelecionados as $produto_id) {
-        $quantidade = 1;
-        $produto_id = intval($produto_id);
-        $stmtItem->bind_param("iii", $pedido_id, $produto_id, $quantidade);
-        $stmtItem->execute();
-    }
-
-    // Redireciona para pedidos.php após salvar
-    header("Location: pedidos.php");
-    exit;
+foreach ($produtosSelecionados as $produto_id) {
+    $quantidade = 1; // por enquanto, sempre 1
+    $produto_id = intval($produto_id);
+    $stmtItem->bind_param("iii", $pedido_id, $produto_id, $quantidade);
+    $stmtItem->execute();
 }
-?>
 
+// ==================== TELA DE NOTA ====================
+?>
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Nota do Pedido</title>
+    <title>Nota do Pedido #<?= $pedido_id ?></title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
 </head>
-<body class="bg-light">
-<div class="container mt-4">
-    <h2 class="text-center mb-4">Resumo do Pedido</h2>
-
-    <div class="card shadow-sm p-4 mb-4">
-        <p><strong>Cliente:</strong> <?= htmlspecialchars($cliente ?: 'Não informado') ?></p>
-        <p><strong>Mesa:</strong> <?= htmlspecialchars($mesa ?: 'Não informada') ?></p>
-    </div>
-
-    <div class="card shadow-sm p-3">
-        <table class="table table-striped">
-            <thead>
-                <tr>
-                    <th>Produto</th>
-                    <th>Categoria</th>
-                    <th>Preço (R$)</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($produtos as $p): ?>
-                    <tr>
-                        <td><?= htmlspecialchars($p['nome']) ?></td>
-                        <td><?= htmlspecialchars($p['categoria']) ?></td>
-                        <td><?= number_format(floatval($p['preco']), 2, ',', '.') ?></td>
-                    </tr>
-                <?php endforeach; ?>
-            </tbody>
-            <tfoot>
-                <tr>
-                    <th colspan="2">Total</th>
-                    <th>R$ <?= number_format($total, 2, ',', '.') ?></th>
-                </tr>
-            </tfoot>
-        </table>
-    </div>
-
-    <form method="POST">
-        <input type="hidden" name="cliente" value="<?= htmlspecialchars($cliente) ?>">
-        <input type="hidden" name="mesa" value="<?= htmlspecialchars($mesa) ?>">
-        <?php foreach ($produtosSelecionados as $id): ?>
-            <input type="hidden" name="produtos[]" value="<?= intval($id) ?>">
-        <?php endforeach; ?>
+<body>
+<div class="container mt-5 mb-5">
+    <div class="card shadow-sm p-4">
+        <h2 class="text-center mb-4">🧾 Nota do Pedido #<?= $pedido_id ?></h2>
+        <div class="mb-3"><strong>Cliente:</strong> <?= htmlspecialchars($cliente) ?></div>
+        <div class="mb-3"><strong>Mesa:</strong> <?= htmlspecialchars($mesa) ?></div>
+        <div class="mb-3"><strong>Status:</strong> <?= htmlspecialchars($status) ?></div>
+        <hr>
+        <h4>Itens:</h4>
+        <ul>
+            <?php foreach ($produtos as $p): ?>
+                <li><?= htmlspecialchars($p['nome']) ?> - R$ <?= number_format($p['preco'], 2, ',', '.') ?></li>
+            <?php endforeach; ?>
+        </ul>
+        <hr>
+        <h4>Total: R$ <?= number_format($total, 2, ',', '.') ?></h4>
         <div class="text-center mt-4">
-            <button type="submit" name="finalizar" class="btn btn-primary btn-lg">Finalizar Pedido</button>
-            <a href="adicionar_pedido.php" class="btn btn-secondary btn-lg">Voltar</a>
+            <a href="pedidos.php" class="btn btn-primary btn-lg">Confirmar pedido?</a>
         </div>
-    </form>
+    </div>
 </div>
 </body>
 </html>
