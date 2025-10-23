@@ -25,13 +25,20 @@ while ($row = $result->fetch_assoc()) {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="bg-light">
+
 <div class="container mt-4">
-    <h2 class="text-center mb-5">🍽️ Adicionar Pedido</h2>
+    <!-- Cabeçalho com título e botão de voltar -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold">🍽️ Adicionar Pedido</h2>
+        <a href="pedidos.php" class="btn btn-outline-danger rounded-pill px-4 py-2 shadow-sm">
+            ⬅ Voltar
+        </a>
+    </div>
 
     <!-- FORM PRINCIPAL -->
     <form method="POST" action="nota_pedido.php">
-        <div class="card shadow-sm mb-4">
+        <div class="card shadow-sm mb-4 border-0 rounded-3">
             <div class="card-body">
                 <h4 class="card-title mb-3">🧍 Informações do Pedido</h4>
                 <div class="row">
@@ -42,9 +49,9 @@ while ($row = $result->fetch_assoc()) {
                     <div class="mb-4 col-md-6">
                         <label for="mesa" class="form-label">Mesa:</label>
                         <select name="mesa" id="mesa" class="form-select" required>
-                        <option value="">Selecione a mesa</option>
+                            <option value="">Selecione a mesa</option>
                             <?php 
-                                for($i = 1; $i <= 20; $i++) {
+                                for ($i = 1; $i <= 20; $i++) {
                                     echo "<option value='$i'>Mesa $i</option>";
                                 }
                             ?>
@@ -55,20 +62,29 @@ while ($row = $result->fetch_assoc()) {
         </div>
 
         <?php foreach ($categorias as $categoria => $produtos): ?>
-            <div class="categoria-titulo mt-4"><?= htmlspecialchars($categoria) ?></div>
+            <div class="categoria-titulo mt-4 fs-4 fw-bold"><?= htmlspecialchars($categoria) ?></div>
             <div class="row mt-3">
                 <?php foreach ($produtos as $produto): ?>
                     <div class="col-md-3 mb-4">
-                        <div class="card produto-card">
+                        <div class="card produto-card border-0 shadow-sm">
                             <img src="<?= htmlspecialchars($produto['imagem'] ?: 'imagens/sem_imagem.jpg') ?>" 
-                                 class="card-img-top" 
+                                 class="card-img-top rounded-top" 
                                  alt="<?= htmlspecialchars($produto['nome']) ?>">
-                            <div class="produto-info text-center">
-                                <div class="produto-nome"><?= htmlspecialchars($produto['nome']) ?></div>
-                                <div class="produto-descricao"><?= htmlspecialchars($produto['descricao']) ?></div> <!-- NOVO -->
-                                <div class="produto-preco">R$ <?= number_format($produto['preco'], 2, ',', '.') ?></div>
-                                <input type="checkbox" name="produtos[]" value="<?= $produto['id'] ?>" class="form-check-input mt-2">
-                                <button type="button" class="btn btn-escolher mt-3 w-100" onclick="toggleProduto(this)">Adicionar</button>
+                                 <div class="produto-info text-center">
+    <div class="produto-nome"><?= htmlspecialchars($produto['nome']) ?></div>
+    <div class="produto-descricao"><?= htmlspecialchars($produto['descricao']) ?></div>
+    <div class="produto-preco">R$ <?= number_format($produto['preco'], 2, ',', '.') ?></div>
+    
+    <input type="checkbox" name="produtos[]" value="<?= $produto['id'] ?>" class="form-check-input mt-2">
+    
+                                <div class="d-flex flex-column gap-2 mt-3">
+                                    <button type="button" class="btn btn-escolher w-100" onclick="toggleProduto(this)">Adicionar</button>
+                                        <a href="excluir_produto.php?id=<?= $produto['id'] ?>" 
+                                         class="btn btn-outline-danger w-100"
+                                        onclick="return confirm('Tem certeza que deseja excluir este produto?');">
+                                        🗑️ Excluir
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -77,7 +93,9 @@ while ($row = $result->fetch_assoc()) {
         <?php endforeach; ?>
 
         <div class="text-center mt-5">
-            <button type="submit" class="btn btn-success btn-lg">✅ Finalizar Pedido</button>
+            <button type="submit" class="btn btn-success btn-lg rounded-pill px-5 shadow-sm">
+                ✅ Finalizar Pedido
+            </button>
         </div>
     </form>
 </div>

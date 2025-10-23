@@ -48,15 +48,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
-<div class="container mt-5">
-    <h2 class="text-center mb-4">➕ Cadastrar Produto</h2>
+<body class="bg-light">
+
+<div class="container mt-5 mb-5">
+
+    <!-- Cabeçalho com botão de voltar -->
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold text-dark">➕ Cadastrar Produto</h2>
+        <a href="pedidos.php" class="btn btn-outline-danger rounded-pill px-4 py-2 shadow-sm">
+            ⬅ Voltar
+        </a>
+    </div>
 
     <?php if ($msg): ?>
         <div class="alert alert-info text-center"><?= htmlspecialchars($msg) ?></div>
     <?php endif; ?>
 
-    <div class="card shadow-sm">
+    <div class="card shadow-sm border-0 rounded-3">
         <div class="card-body">
             <form method="POST" enctype="multipart/form-data">
                 <div class="mb-3">
@@ -84,8 +92,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <input type="file" name="imagem" class="form-control" accept="image/*" required>
                 </div>
 
-                <div class="text-center">
-                    <button type="submit" class="btn btn-success btn-lg">✅ Cadastrar Produto</button>
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-success btn-lg rounded-pill px-4 py-2 shadow-sm">
+                        ✅ Cadastrar Produto
+                    </button>
                 </div>
             </form>
         </div>
@@ -95,4 +105,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
-
