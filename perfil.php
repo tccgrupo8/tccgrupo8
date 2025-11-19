@@ -20,6 +20,7 @@ $funcionario = $result->fetch_assoc();
 <head>
 <meta charset="UTF-8">
 <title>Perfil - Vira Copos</title>
+<link rel="stylesheet" href="style.css?v=9">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <style>
     .foto-perfil {
@@ -40,14 +41,26 @@ $funcionario = $result->fetch_assoc();
 </nav>
 
 <div class="container mt-5">
-    <div class="card shadow-sm p-4 text-center">
-        <img src="<?= $funcionario['foto'] ? 'uploads/'.$funcionario['foto'] : 'uploads/default.png' ?>" alt="Foto do Funcionário" class="foto-perfil mb-3">
-        <h3><?= htmlspecialchars($funcionario['nome']) ?></h3>
-        <p><strong>E-mail:</strong> <?= htmlspecialchars($funcionario['email']) ?></p>
-        <p><strong>Cargo:</strong> <?= htmlspecialchars($funcionario['cargo']) ?></p>
-        <a href="editar_perfil.php" class="btn btn-primary btn-lg mt-3">Editar Perfil</a>
+    <div class="perfil-card">
+
+        <img src="<?= $funcionario['foto'] ? 'uploads/'.$funcionario['foto'] : 'uploads/default.png' ?>"
+             class="foto-perfil">
+
+        <div class="perfil-info">
+            <h2>Teste Usuário</h2>
+
+            <p><strong>E-mail:</strong> teste@gmail.com</p>
+            <p><strong>Cargo:</strong> Garçom</p>
+
+            <a href="editar_perfil.php" class="btn-editar-perfil">Editar Perfil</a>
+        </div>
+
     </div>
 </div>
+
+    </div>
+</div>
+
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>

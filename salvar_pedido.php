@@ -1,60 +1,71 @@
 <?php
+// salvar_pedido.php
 session_start();
 include 'conexao.php';
-
 if (!isset($_SESSION['funcionario_id'])) {
-    header('Location: index.php');
-    exit;
+    header('Location: index.php'); exit;
 }
 
-// Verifica se veio o POST corretamente
-if ($_SERVER['REQUEST_METHOD'] !== 'POST' || empty($_POST['produtos'])) {
-    header('Location: pedidos.php');
-    exit;
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    header('Location: pedidos.php'); exit;
 }
 
 $cliente = trim($_POST['cliente'] ?? '');
 $mesa = trim($_POST['mesa'] ?? '');
-$funcionario_id = intval($_SESSION['funcionario_id']);
-$produtosSelecionados = $_POST['produtos'];
+$produtos = $_POST['produtos'] ?? []; // array de ids
+$quantidades = $_POST['quantidades'] ?? []; // caso envie quantidades associadas
 
-if (empty($cliente) || empty($mesa)) {
-    echo "<script>alert('Preencha o cliente e a mesa.'); window.history.back();</script>";
+if (empty($cliente) || empty($mesa) || empty($produtos)) {
+    echo "<script>alert('Dados incompletos.'); window.history.back();</script>";
     exit;
 }
 
-// Calcula o total
-$placeholders = implode(',', array_fill(0, count($produtosSelecionados), '?'));
-$sql = "SELECT preco FROM produtos WHERE id IN ($placeholders)";
-$stmt = $conn->prepare($sql);
-$stmt->bind_param(str_repeat('i', count($produtosSelecionados)), ...array_map('intval', $produtosSelecionados));
-$stmt->execute();
-$result = $stmt->get_result();
+$funcionario_id = intval($_SESSION['funcionario_id']);
 
-$total = 0;
-while ($row = $result->fetch_assoc()) {
-    $total += floatval($row['preco']);
+// inicia transação
+$conn->begin_transaction();
+
+try {
+    // insere pedido
+    $stmt = $conn->prepare("INSERT INTO pedidos (cliente, mesa, funcionario_id, status, criado_em) VALUES (?, ?, ?, 'Pendente', NOW())");
+    $stmt->bind_param("ssi", $cliente, $mesa, $funcionario_id);
+    $stmt->execute();
+    $pedido_id = $conn->insert_id;
+    $stmt->close();
+
+    // busca preços dos produtos selecionados para garantir consistência
+    // cria placeholders
+    $placeholders = implode(',', array_fill(0, count($produtos), '?'));
+    $types = str_repeat('i', count($produtos));
+    $sql = "SELECT id, preco FROM produtos WHERE id IN ($placeholders)";
+    $stmtP = $conn->prepare($sql);
+    // bind dinâmico
+    $stmtP->bind_param($types, ...array_map('intval', $produtos));
+    $stmtP->execute();
+    $res = $stmtP->get_result();
+    $precos = [];
+    while ($r = $res->fetch_assoc()) $precos[$r['id']] = $r['preco'];
+    $stmtP->close();
+
+    // insere itens_pedido
+    $sql_item = "INSERT INTO itens_pedido (pedido_id, produto_id, quantidade, preco, status_item) VALUES (?, ?, ?, ?, 'aguardando')";
+    $stmt_item = $conn->prepare($sql_item);
+
+    foreach ($produtos as $pid) {
+        $pid = intval($pid);
+        $qtd = 1;
+        if (isset($quantidades[$pid])) $qtd = max(1, intval($quantidades[$pid]));
+        $preco = isset($precos[$pid]) ? floatval($precos[$pid]) : 0.0;
+        $stmt_item->bind_param("iiid", $pedido_id, $pid, $qtd, $preco);
+        $stmt_item->execute();
+    }
+    $stmt_item->close();
+
+    $conn->commit();
+
+    header("Location: pedidos.php?msg=criado");
+    exit;
+} catch (Exception $e) {
+    $conn->rollback();
+    die("Erro ao salvar pedido: " . $e->getMessage());
 }
-
-// Insere o pedido
-$status = 'Em andamento';
-$sqlPedido = "INSERT INTO pedidos (cliente, mesa, funcionario_id, status, total) VALUES (?, ?, ?, ?, ?)";
-$stmtPedido = $conn->prepare($sqlPedido);
-$stmtPedido->bind_param("ssisd", $cliente, $mesa, $funcionario_id, $status, $total);
-$stmtPedido->execute();
-$pedido_id = $conn->insert_id;
-
-// Insere os itens do pedido
-$sqlItem = "INSERT INTO itens_pedido (pedido_id, produto_id, quantidade) VALUES (?, ?, ?)";
-$stmtItem = $conn->prepare($sqlItem);
-
-foreach ($produtosSelecionados as $produto_id) {
-    $quantidade = 1;
-    $stmtItem->bind_param("iii", $pedido_id, $produto_id, $quantidade);
-    $stmtItem->execute();
-}
-
-// Redireciona para pedidos.php com mensagem
-header("Location: pedidos.php?msg=sucesso");
-exit;
-?>

@@ -13,8 +13,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($result->num_rows > 0) {
         $func = $result->fetch_assoc();
         if (password_verify($senha, $func['senha'])) {
+            // define sessão com tipo de usuário
             $_SESSION['funcionario_id'] = $func['id'];
             $_SESSION['funcionario_nome'] = $func['nome'];
+            // importante: campo no banco chama tipo_usuario
+            $_SESSION['funcionario_tipo'] = $func['tipo_usuario'] ?? 'garcom';
             header('Location: painel.php');
             exit;
         } else {
@@ -25,6 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
+
 <!doctype html>
 <html lang="pt-br">
 <head>
@@ -33,7 +37,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <img src="viracopos.png" alt="Imagem de Viracopos" style="display: block; margin: 0 auto; width: 300px;">
 <title>Login - Funcionário</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="css/login.css">
+<link rel="stylesheet" href="style.css?v=2">
+
 </head>
 <body class="bg-black">
 <div class="container py-5">

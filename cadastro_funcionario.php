@@ -30,6 +30,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <title>Cadastro de Funcionário</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
+<link rel="stylesheet" href="style.css?v=2">
 <body class="bg-black">
 <div class="container py-5">
     <div class="row justify-content-center">

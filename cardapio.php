@@ -16,7 +16,8 @@ if (!isset($_SESSION['funcionario_id'])) {
   <title>Painel do Funcionário - Vira Copos</title>
   <!-- Bootstrap 5 CDN -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css?v=2">
+
 </head>
 <body>
 <!-- Navbar / Offcanvas for mobile -->

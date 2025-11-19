@@ -21,7 +21,8 @@ while ($row = $result->fetch_assoc()) {
 <meta charset="UTF-8">
 <title>Adicionar Pedido</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="style.css?v=2">
+
 
 <style>
 .produto-card { min-height: 380px; }
@@ -213,4 +214,4 @@ function alterarQtd(campo, valor) {
 </script>
 
 </body>
-</ht
+</html>

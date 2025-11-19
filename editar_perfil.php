@@ -58,6 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
 <meta charset="UTF-8">
 <title>Editar Perfil - Vira Copos</title>
+<link rel="stylesheet" href="style.css?v=10x'">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 <style>
     .foto-perfil {

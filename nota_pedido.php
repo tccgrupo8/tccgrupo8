@@ -49,7 +49,8 @@ while ($row = $result->fetch_assoc()) {
     <meta charset="UTF-8">
     <title>Nota do Pedido - Vira Copos</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=2">
+
 </head>
 <body class="bg-light">
 
